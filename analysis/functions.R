@@ -1,4 +1,4 @@
-# Copyright (c) 2021 Mathyn Vervaart, Mark Strong, Karl Claxton, Nicky Welton, Torbjørn Wisløff, Eline Aas
+# Copyright (c) 2021 Mathyn Vervaart, Mark Strong, Karl Claxton, Nicky Welton, Torbj?rn Wisl?ff, Eline Aas
 # Licensed under the MIT License
 
 #####################################################################################
@@ -737,11 +737,15 @@ marg_fun <- function (evsi, time_add, n_pat, trial_cost, incr_nb) {
   # plot marginal EVSI + marginal cost
   x_times <- seq.int(min(time_add)+1, max(time_add), 1)
   
-  marg_evsi <- as.numeric(diff(evsi_smooth))
-  n_times <- seq.int(1, max(time_add)-min(time_add), 1)
-  n_times_desc <- sort(n_times, decreasing = T)
-  marg_evsi_pop <- cbind(x_times, (n_times_desc*marg_evsi)*n_pat) 
-  marg_evsi_pop <- data.table(times = x_times, NB = (n_times_desc*marg_evsi)*n_pat, group = 1) 
+  pop_evsi <- (sort(seq.int(min(time_add), max(time_add), 1), decreasing = T) - min(time_add)) * n_pat * evsi_smooth
+  marg_pop_evsi <- diff(pop_evsi)
+  marg_evsi_pop <- data.table(times = x_times, NB = marg_pop_evsi, group = 1) 
+
+  # marg_evsi <- as.numeric(diff(evsi_smooth))
+  # n_times <- seq.int(1, max(time_add)-min(time_add), 1)
+  # n_times_desc <- sort(n_times, decreasing = T)
+  # marg_evsi_pop <- cbind(x_times, (n_times_desc*marg_evsi)*n_pat) 
+  # marg_evsi_pop <- data.table(times = x_times, NB = (n_times_desc*marg_evsi)*n_pat, group = 1) 
   
   # marginal trial costs
   marg_cost_trial <- data.table(times = x_times, NB = rep(trial_cost, length(marg_evsi)), group = 2) 
@@ -783,7 +787,7 @@ plot_enbs_fun <- function (df, ylab, leg_pos, x1, x2, y1, y2, anno1, anno2) {
     theme(legend.position = leg_pos) +
     ggtitle("") + scale_size(range=c(0.1, 2), guide=FALSE) + 
     scale_x_continuous(breaks = seq(12,84,24), limits = c(6,84)) +
-    scale_y_continuous(breaks = seq(0,200,50), limits = c(0,210)) +
+    #scale_y_continuous(breaks = seq(0,200,50), limits = c(0,210)) +
     
     geom_point(aes(x = x1, y = y1), colour="black", size = 1) +
     geom_point(aes(x = x2, y = y2), colour="black", size = 1) +
